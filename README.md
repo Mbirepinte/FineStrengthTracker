@@ -8,20 +8,30 @@ pour chaque série.
 ## Flux d'utilisation
 
 1. **Menu** : sélection de l'exercice de départ dans le catalogue
-2. **ACTIVE** : série en cours, timer qui défile
-   - `BACK` → fin de la série, passe à l'édition des répétitions
-3. **REPS_EDIT** : nombre de répétitions affiché
-   - `UP` / `DOWN` → ajuste les reps
-   - `START` → passe à l'édition du poids
-4. **WEIGHT_EDIT** : poids affiché (pas de 5 kg)
-   - `UP` / `DOWN` → ajuste le poids
-   - `START` → passe à la sélection de l'exercice
-5. **EXERCISE_EDIT** : exercice affiché
-   - `UP` / `DOWN` → change d'exercice dans le catalogue
-   - `START` → enregistre la série (champs FIT) et démarre le repos
-6. **REST** : timer de repos
+2. **ACTIVE** : série en cours, timer qui défile et compteur de répétitions
+   en direct (détection automatique par l'accéléromètre, voir ci-dessous)
+   - `BACK` → fin de la série, passe à l'écran de revue de série
+3. **SET_REVIEW** : reps / poids / exercice affichés ensemble, un champ est
+   surligné à la fois
+   - `UP` / `DOWN` → ajuste la valeur du champ surligné (reps ±1, poids
+     ±5 kg, exercice : exercice précédent/suivant du catalogue)
+   - `START` → passe au champ suivant, ou (sur le champ exercice)
+     enregistre la série (champs FIT) et démarre le repos
+   - `BACK` → revient au champ précédent, ou (sur le champ reps) reprend
+     la série en cours (retour à ACTIVE)
+4. **REST** : timer de repos
    - `BACK` → relance une nouvelle série (retour à ACTIVE)
-7. **MENU** (à tout moment) : termine et sauvegarde l'activité, retour au menu
+5. **MENU** (à tout moment) : termine et sauvegarde l'activité, retour au menu
+
+## Détection automatique des répétitions
+
+Pendant l'état ACTIVE, `source/RepCounter.mc` écoute l'accéléromètre
+(`Sensor.registerSensorDataListener`, 25 Hz) et compte un "rep" à chaque
+oscillation d'amplitude suffisante (passage au-dessus de 1150 mG puis
+en-dessous de 850 mG, avec un anti-rebond de 400 ms). C'est une heuristique
+V0 volontairement simple : le nombre affiché sert de point de départ et reste
+modifiable manuellement sur l'écran SET_REVIEW. Nécessite la permission
+`Sensor` (ajoutée dans `manifest.xml`).
 
 ## Catalogue d'exercices (V0)
 
